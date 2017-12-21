@@ -1,0 +1,30 @@
+<div *ngIf="flagList">
+	Лист
+
+	<ul>
+		<li *ngFor="let men of service.listContacts;" >
+			<a [routerLink]="['/messages']" 
+				[queryParams]="{id : men.id}">{{men.name}} - {{men.id}}</a>
+		</li>
+	</ul>
+</div>
+<div *ngIf="!flagList">
+	Message от {{id}}
+	<p>{{contactInfo.name}} - {{contactInfo.id}}</p>
+	<div *ngFor='let msg of messageArray; let i = index'>
+		
+
+		<span> {{i+1}}. {{ msg.who === 'i' ? 'Я' : contactInfo.name }}  </span> 
+
+		<br>
+		<ul>
+			<li *ngFor="let miniMsg of msg.msg;">{{miniMsg}}</li>
+		</ul>
+	</div>
+
+	<hr>
+
+	<input type="text" [(ngModel)]="newMessage">
+	<button (click)="sendMsg()">Отправить</button>
+</div>
+<button routerLink="/">Назад</button>

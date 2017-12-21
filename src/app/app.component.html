@@ -1,0 +1,34 @@
+<div class="container">
+
+  <div class="block">
+    <div class="left-bar" *ngIf="mainService.viewMenu">
+
+      <div class="menu">
+        <ul>
+          <li>Страница</li>
+          <li><a [routerLink]="['/messages']">Сообщения</a></li>
+          <li><a [routerLink]="['/messages']" [queryParams]="{id:321}">Сообщения 321</a></li>
+          <li><a [routerLink]="['/messages']" [queryParams]="{idi:321}">Сообщения false</a></li>
+          <li>Выход</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="block center">
+    <div class="main-block">
+      <div class="loader" *ngIf="mainService.viewLoader"></div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="right-bar">
+      что-то еще..
+    </div>
+  </div>
+
+  <div class="clear"></div>
+</div>
+
