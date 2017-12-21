@@ -12,11 +12,14 @@ import * as _ from 'underscore';
 export class MessagesComponent implements OnInit {
   flagList: boolean = true;
   id: number;
-  contactInfo: any;
+  contact: any;
   messageArray: any;
   newMessage: string;
   lastMessage: any;
   whoLast: string;
+
+  temp: string;
+  answerText: string;
 
   constructor(private route: ActivatedRoute, private service: MainService, private router: Router) { }
 
@@ -40,11 +43,11 @@ export class MessagesComponent implements OnInit {
   }
 
   genMessages(): boolean {
-    this.contactInfo = _.find(this.service.listContacts, (el)=>{
+    this.contact = _.find(this.service.listContacts, (el)=>{
       return el.id === this.id;
     });
 
-    if (!this.contactInfo) { return false; } 
+    if (!this.contact) { return false; } 
     else {
       this.messageArray = this.service.messages[this.id.toString()];
 
@@ -56,13 +59,64 @@ export class MessagesComponent implements OnInit {
 
 
   sendMsg(){
-    if (this.lastMessage.who === 'i'){
-      this.lastMessage.msg.push(this.newMessage);
+    if (!this.newMessage) return;
+
+    if (this.lastMessage.go === 'out'){
+
+      this.lastMessage.messages.push(this.newMessage);
+
     } else {
-      this.messageArray.push({who:'i', msg: [this.newMessage]});
+
+      this.messageArray.push({
+        go:'out', 
+        messages: [this.newMessage], 
+        date: new Date(), 
+        name: this.service.myName
+      });
+
       this.lastMessage = this.messageArray[this.messageArray.length-1];
     }
-    console.log(this.service.messages);
+
+    this.temp = this.newMessage;
+    this.newMessage = '';
+
+    this.answerMsg();
+
+  }
+
+  answerMsg(){
+    if (this.temp.toLowerCase().indexOf('привет') !== -1) {
+      this.answerText = 'Привет';
+    } else {
+      return;
+    }
+
+    setTimeout(()=>{
+      this.service.writes = true;
+    }, 1200);
+
+    setTimeout(()=>{
+      this.service.writes = false;
+
+      this.messageArray.push({
+        go:'in', 
+        messages: [this.answerText], 
+        date: new Date(), 
+        name: this.contact.name
+      });
+
+      this.lastMessage = this.messageArray[this.messageArray.length-1];
+
+    }, 5200);
+  }
+
+  enter(e){
+    if (e.code.toLowerCase() === 'enter') {
+      this.sendMsg();
+    }
+    // e.preventDefault();
+    // e.stopPropagination();
+
   }
 
 }

@@ -9,22 +9,33 @@
 	</ul>
 </div>
 <div *ngIf="!flagList">
-	Message от {{id}}
-	<p>{{contactInfo.name}} - {{contactInfo.id}}</p>
-	<div *ngFor='let msg of messageArray; let i = index'>
-		
 
-		<span> {{i+1}}. {{ msg.who === 'i' ? 'Я' : contactInfo.name }}  </span> 
-
-		<br>
-		<ul>
-			<li *ngFor="let miniMsg of msg.msg;">{{miniMsg}}</li>
-		</ul>
+	<div class="message light">
+		<div class="message-back"><a routerLink="/"><span>🢐</span>  Назад</a></div>
+		<div class="message-wrapper">
+			{{contact.name}}
+		</div>
 	</div>
 
-	<hr>
+	<msg 
+		*ngFor="let msg of messageArray" 
+		[msgArray]="msg.messages" 
+		[author]="msg.name"
+		[time]="msg.date"
+		[avatar]="msg.go === 'out' ? service.myAvatar : contact.avatar"
+	></msg>
 
-	<input type="text" [(ngModel)]="newMessage">
-	<button (click)="sendMsg()">Отправить</button>
+	<div class="answer">
+		<span [ngStyle]="{animation: service.writes ? 'show  2s infinite linear' : ''}">{{contact.name}} пишет..</span>
+	</div>
+
+
+	<div class="message light">
+		<div class="message-wrapper">
+			<input type="text" 
+				[(ngModel)]="newMessage" 
+				(keydown)="enter($event)"
+				placeholder="Сообщение">
+		</div>
+	</div>
 </div>
-<button routerLink="/">Назад</button>

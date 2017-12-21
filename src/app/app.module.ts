@@ -13,6 +13,7 @@ import { AuthGuard } from './service/auth.guard.service';
 
 import { MainService } from './service/main.service';
 import { MessagesComponent } from './messages/messages.component';
+import { MsgComponent } from './msg/msg.component';
 
 const appRoutes: Routes = [
   { path: '', component: AuthComponent },
@@ -26,7 +27,8 @@ const appRoutes: Routes = [
     AppComponent,
     AuthComponent,
     DesktopComponent,
-    MessagesComponent
+    MessagesComponent,
+    MsgComponent
   ],
   imports: [
     BrowserModule,

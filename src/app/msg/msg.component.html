@@ -1,0 +1,11 @@
+<div class="message">
+	<div class="message-img"><img [src]="avatar" alt=""></div>
+	<div class="message-wrapper">
+		<div class="message-autor">{{author}} <span>{{time | date:'HH:mm'}}</span></div>
+		<div class="message-text">
+			<div class="message-label" *ngFor="let msg of msgArray">
+				{{msg}}
+			</div>
+		</div>
+	</div>
+</div>
