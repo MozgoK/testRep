@@ -1,0 +1,11 @@
+<div class="message">
+	<div class="message-img"><img [src]="avatar" alt=""></div>
+	<div class="message-wrapper">
+		<div class="message-autor">{{name}} <span>{{time ? (time | date:'HH:mm') : ''}}</span></div>
+		<div class="message-text">
+			<div class="message-label" [ngClass]="{italic: isNewChat, 'light-color': isNewChat}">
+				<span *ngIf="IAM" class="iam">Я</span> {{msg}}
+			</div>
+		</div>
+	</div>
+</div>

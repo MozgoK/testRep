@@ -1,29 +1,42 @@
 <div *ngIf="flagList">
-	Лист
 
-	<ul>
-		<li *ngFor="let men of service.listContacts;" >
-			<a [routerLink]="['/messages']" 
-				[queryParams]="{id : men.id}">{{men.name}} - {{men.id}}</a>
-		</li>
-	</ul>
+	<div class="message light">
+		<div class="message-back"><a routerLink="/desk"><span>🢐</span>  Назад</a></div>
+		<div class="message-wrapper">
+			Сообщения
+		</div>
+	</div>
+
+	<msg-in-list
+		*ngFor="let item of sortedList"
+		[name]="item.name"
+		[avatar]="item.avatar"
+		[lastMsg]="listLastMessage[item.id].lastMessage"
+
+		[routerLink]="['/messages']" 
+		[queryParams]="{id : item.id}"
+	></msg-in-list>
+
 </div>
 <div *ngIf="!flagList">
 
 	<div class="message light">
-		<div class="message-back"><a routerLink="/"><span>🢐</span>  Назад</a></div>
+		<div class="message-back"><a routerLink="/messages"><span>🢐</span>  Назад</a></div>
 		<div class="message-wrapper">
 			{{contact.name}}
 		</div>
 	</div>
 
-	<msg 
-		*ngFor="let msg of messageArray" 
-		[msgArray]="msg.messages" 
-		[author]="msg.name"
-		[time]="msg.date"
-		[avatar]="msg.go === 'out' ? service.myAvatar : contact.avatar"
-	></msg>
+	<div *ngIf="messageArray">
+		<msg 
+			*ngFor="let msg of messageArray" 
+			[msgArray]="msg.messages" 
+			[author]="msg.go === 'out' ? service.myName : contact.name"
+			[time]="msg.date"
+			[avatar]="msg.go === 'out' ? service.myAvatar : contact.avatar"
+		></msg>
+	</div>
+	<div *ngIf="!messageArray" class="new-chat">Сообщений пока нет, будьте первым кто напишет.</div>
 
 	<div class="answer">
 		<span [ngStyle]="{animation: service.writes ? 'show  2s infinite linear' : ''}">{{contact.name}} пишет..</span>

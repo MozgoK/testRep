@@ -1,6 +1,30 @@
-<div class="loader" [hidden]="!viewLoader"></div>
-<div class="auth-form">
-	<input type="text" name="nick" placeholder="Логин">
-	<input type="password" name="pass" placeholder="Пароль">
-	<button (click)="logIn()">ОК</button>
+
+
+
+
+
+<div class="avatar"></div>
+
+<div class="auth-form message light">
+	<div class="message-wrapper">
+		<input type="text" 
+			[disabled]="viewLoader" 
+			[(ngModel)]="name" 
+			(keydown)="enter($event)"
+			[ngStyle]="{'border-bottom-color': name ? '#CDDC39' : ''}"
+			placeholder="Имя">
+	</div>
 </div>
+
+<div class="auth-form message light">
+	<div class="message-wrapper">
+		<input type="password" 
+			[disabled]="viewLoader" 
+			[(ngModel)]="pass" 
+			(keydown)="enter($event)"
+			[ngStyle]="{'border-bottom-color': pass ? '#CDDC39' : ''}"
+			placeholder="Пароль">
+	</div>
+</div>
+
+<button class="btn auth-btn" [disabled]="viewLoader" (click)="logIn()">ОК</button>

@@ -14,11 +14,12 @@ import { AuthGuard } from './service/auth.guard.service';
 import { MainService } from './service/main.service';
 import { MessagesComponent } from './messages/messages.component';
 import { MsgComponent } from './msg/msg.component';
+import { MsgInListComponent } from './msg.in.list/msg.in.list.component';
 
 const appRoutes: Routes = [
   { path: '', component: AuthComponent },
   { path: 'desk', component: DesktopComponent, canActivate: [AuthGuard] },
-  { path: 'messages', component: MessagesComponent }
+  { path: 'messages', component: MessagesComponent, canActivate: [AuthGuard] }
 ];
 
 
@@ -28,7 +29,8 @@ const appRoutes: Routes = [
     AuthComponent,
     DesktopComponent,
     MessagesComponent,
-    MsgComponent
+    MsgComponent,
+    MsgInListComponent
   ],
   imports: [
     BrowserModule,

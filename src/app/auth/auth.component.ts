@@ -13,15 +13,21 @@ export class AuthComponent implements OnInit {
 
   viewLoader = false;
 
-  constructor(private router: Router, private auth: AuthService, private mainService: MainService) { }
+  constructor(private router: Router, private auth: AuthService, private service: MainService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.service.url = this.router.url;
   }
 
-  logIn() {
-    this.viewLoader = true;
-    this.auth.logIn();
+  logIn(): void {
+    this.service.viewLoader = true;
     this.router.navigate(['/desk']);
+  }
+
+  enter(e): void {
+    if (e.code.toLowerCase() === 'enter'){
+      this.logIn();
+    }
   }
 
 }

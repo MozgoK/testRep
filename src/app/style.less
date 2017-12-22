@@ -15,12 +15,25 @@ body {
 }
 
 .loader {
+	display: none;
 	position: fixed;
 	top: 0;
 	left: 0;
 	bottom: 0;
 	right: 0;
 	background: rgba(40,70,200,.5);
+	z-index: 100;
+	justify-content: center;
+    align-items: center;
+}
+
+.avatar {
+	height: 150px;
+	width: 150px;
+	background: #a9a9a9;
+	border-radius: 50%;
+	margin: 30px auto;
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .container{
@@ -41,30 +54,24 @@ body {
 	}
 
 	& .main-block, .left-bar, .right-bar {
-		border: 1px solid rgba(255,255,255,.1);
+		// border: 1px solid rgba(255,255,255,.1);
 		border-radius: 3px;
-		padding: 15px;
+		// padding: 15px;
+		padding: 5px;
 
 		& ul {
 			list-style: none;
     		padding: 0;
+    		margin: 0;
 		}
 	}
 
 }
 
-.auth-form {
+.auth-form, .auth-btn {
 	width: 250px;
 	margin: 0 auto;
-	& input {
-		display: block;
-		padding: 10px;
-		width: 100%;
-		margin-bottom: 5px;
-		box-sizing: border-box;
-		border-radius: 3px;
-		border: 1px solid yellowgreen;
-	}
+	display: block;
 }
 
 
@@ -112,6 +119,7 @@ body {
 
 .message-label {
 	padding: 5px 0;
+	color: rgba(255,255,255,.8);
 }
 
 .message.light {
@@ -180,3 +188,181 @@ a{
 	50% {opacity: 1;}
 	to {opacity: 0;}
 }
+
+@keyframes msg-show {
+	from {opacity: 0;}
+	10% {opacity: 0;}
+	to {opacity: 1;}
+}
+
+msg .message, msg-in-list .message {
+	// opacity: 0;
+	animation: msg-show .6s linear;
+}
+
+
+.animate {
+	animation: msg-show .1s linear;
+}
+
+
+.new-chat {
+	font-size: 13px;
+    text-align: center;
+}
+
+.italic {
+	font-style: italic;
+}
+.light-color {
+	color: rgba(255,255,255,.3);
+}
+
+span.iam {
+	color: #000;
+    display: inline-block;
+    background: #CDDC39;
+    height: 15px;
+    width: 15px;
+    line-height: 15px;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+msg-in-list {
+	&:focus {
+		outline: none;
+	}
+	&:hover .message {
+		background: #585858;
+		cursor: pointer;
+	}
+}
+
+
+.btn {
+	background: rgba(0,0,0,.12);
+    padding: 10px;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    color: white;
+    min-width: 120px;
+
+	&:hover,.active {
+		background: #424242;
+	}
+	&.active {
+		background: #424242;
+	}
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.container-spanner circle {
+    transition-property: stroke;
+    animation-duration: 4s;
+    animation-timing-function: cubic-bezier(.35,0,.25,1);
+    animation-iteration-count: infinite;
+
+    fill: transparent;
+    transform-origin: center;
+    transition: stroke-dashoffset 225ms linear;
+
+    animation-name: mat-progress-spinner-stroke-rotate-100; 
+    stroke-dasharray: 282.743px; 
+    stroke-width: 5%;
+
+    stroke: #9c27b0;
+}
+
+.container-spanner {
+    animation: mat-progress-spinner-linear-rotate 2s linear infinite;
+    width: 50px; 
+    height: 50px;
+    & svg {
+    	width: 50px; 
+    	height: 50px;
+    }
+}
+
+@keyframes mat-progress-spinner-linear-rotate {
+	0% {transform: rotate(0);}
+	100% {transform: rotate(360deg);}
+}
+
+@keyframes mat-progress-spinner-stroke-rotate-100 {
+	0% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotate(0);
+	}
+	12.5% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotate(0);
+	}
+	12.51% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotateX(180deg) rotate(72.5deg);
+	}
+	25% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotateX(180deg) rotate(72.5deg);
+	}
+	25.1% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotate(270deg);
+	}
+	37.5% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotate(270deg);
+	}
+	37.51% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotateX(180deg) rotate(161.5deg);
+	}
+	50% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotateX(180deg) rotate(161.5deg);
+	}
+	50.01% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotate(180deg);
+	}
+	62.5% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotate(180deg);
+	}
+	62.51% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotateX(180deg) rotate(251.5deg);
+	}
+	75% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotateX(180deg) rotate(251.5deg);
+	}
+	75.01% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotate(90deg);
+	}
+	87.5% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotate(90deg);
+	}
+	87.51% {
+	    stroke-dashoffset: 56.54867px;
+	    transform: rotateX(180deg) rotate(341.5deg);
+	}
+	100% {
+	    stroke-dashoffset: 268.60617px;
+	    transform: rotateX(180deg) rotate(341.5deg);
+	}
+}
+
+

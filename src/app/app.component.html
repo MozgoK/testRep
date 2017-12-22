@@ -1,30 +1,50 @@
+<div class="loader" [ngStyle]="{display: service.viewLoader ? 'flex' : ''}">
+  <div class="container-spanner">
+    <svg viewBox="0 0 100 100">
+      <circle cx="50%" cy="50%" r="45"></circle>
+    </svg>
+  </div>
+</div>
+
 <div class="container">
 
-  <div class="block">
-    <div class="left-bar" *ngIf="mainService.viewMenu">
+<div class="block">
+  <div class="left-bar" *ngIf="service.viewMenu">
 
-      <div class="menu">
-        <ul>
-          <li>Страница</li>
-          <li><a [routerLink]="['/messages']">Сообщения</a></li>
-          <li><a [routerLink]="['/messages']" [queryParams]="{id:321}">Сообщения 321</a></li>
-          <li><a [routerLink]="['/messages']" [queryParams]="{idi:321}">Сообщения false</a></li>
-          <li>Выход</li>
-        </ul>
-      </div>
+    <div class="menu">
+      <ul>
+        <li class="btn" 
+          [routerLink]="['/desk']" 
+          routerLinkActive="active"
+        >Страница</li>
 
+        <li class="btn" 
+          [routerLink]="['/messages']" 
+          routerLinkActive="active"
+        >Мои сообщения</li>
+
+        <li class="btn" 
+          [routerLink]="['/messages']" 
+          [queryParams]="{idi:321}" 
+          routerLinkActive="active"
+        >Сообщения fa</li>
+
+        <li class="btn" (click)="exit()">Выход</li>
+      </ul>
     </div>
+
   </div>
+</div>
 
   <div class="block center">
     <div class="main-block">
-      <div class="loader" *ngIf="mainService.viewLoader"></div>
+      <div class="loader" *ngIf="service.viewLoader"></div>
       <router-outlet></router-outlet>
     </div>
   </div>
 
   <div class="block">
-    <div class="right-bar">
+    <div class="right-bar" *ngIf="service.viewMenu">
       что-то еще..
     </div>
   </div>

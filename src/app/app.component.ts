@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import { MainService } from './service/main.service';
 import { AuthService } from './service/auth.service';
 
@@ -12,6 +13,12 @@ import { AuthService } from './service/auth.service';
   // style: [STYLES]
 })
 export class AppComponent {
-	constructor(private mainService: MainService, private auth: AuthService){}
-  title = 'app';
+	constructor(private service: MainService, private auth: AuthService, private router: Router){}
+
+	exit(): void{
+		this.service.url = '';
+		this.service.viewMenu = false;
+		this.auth.logOut(); 
+		this.router.navigate(['/']);
+	}
 }

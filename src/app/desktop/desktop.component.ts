@@ -10,13 +10,10 @@ import { MainService } from '../service/main.service';
 })
 export class DesktopComponent implements OnInit {
 
-  constructor(private router: Router, private mainService: MainService) { }
+  constructor(private router: Router, private service: MainService) { }
 
   ngOnInit() {
-  }
-  ngDoCheck() {
-  	// console.log(1+this.mainService.viewLoader);
-  	// this.mainService.viewLoader = false;
+    setTimeout(()=>{this.service.viewLoader = false;},100);
   }
 
 }
