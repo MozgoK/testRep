@@ -90,7 +90,26 @@ export class MessagesComponent implements OnInit {
 
       if (this.messageArray){
         this.getLastMessage();
+      } else {
+        this.lastMessage = null;
       }
+
+      this.newMessage = '';
+      this.service.writes = false;
+      this.service.stages = {
+        1: false,
+        2: false,
+        3: false,
+        4: false,
+        5: false,
+        6: false,
+        7: false,
+        8: false,
+        end: false,
+        check: [0,0,0,0,0,0,0,0]
+      }
+
+
   }  
 
 
@@ -130,31 +149,43 @@ export class MessagesComponent implements OnInit {
 
 
   answerMsg(): void{
-    if (this.temp.toLowerCase().indexOf('привет') !== -1) {
-      this.answerText = 'Привет';
-    } else if (this.temp.toLowerCase().indexOf('как дела') !== -1) {
-      this.answerText = 'Отлично:) а ты как?';
-    } else { return; }
+    console.log(this.service.stages.end);
+    if (this.service.stages.end) return;
+
+    let answArray = this.service.respondTo(this.temp);
+    
+    if (!answArray) return;
+
+
+    let period = 5200 / answArray.length;
+
 
     setTimeout(()=>{
       this.service.writes = true;
     }, 1200);
 
-    setTimeout(()=>{
-      this.service.writes = false;
 
-      this.messageArray.push({
-        go:'in', 
-        messages: [this.answerText], 
-        date: new Date(), 
-        name: this.contact.name
-      });
+    answArray.forEach((e, ind)=>{
+      setTimeout(()=>{
 
-      this.answerText = '';
+        if ((ind === 0 && this.lastMessage.go === 'out') || this.lastMessage.go === 'out') {
+          this.messageArray.push({
+            go:'in', 
+            messages: [e], 
+            date: new Date(), 
+            name: this.contact.name
+          });
+        } else {
+          this.lastMessage.messages.push(e);
+        }
 
-      this.getLastMessage();
+        this.getLastMessage();
 
-    }, 5200);
+        // Скидываем флаг, что кто то пишет
+        if (ind === answArray.length - 1) this.service.writes = false;
+
+      }, period*(ind + 1));
+    });
   }
 
 
