@@ -15,7 +15,7 @@ export class AuthService {
 				if (this.service.url === '/' && this.logIn()) {
 					setTimeout(()=>{
 						resolve(this.isLoggedIn);
-					}, 1000);
+					}, 1500);
 				} else {
 					resolve(false);
 				}

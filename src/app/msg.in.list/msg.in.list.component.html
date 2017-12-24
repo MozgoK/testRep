@@ -3,8 +3,15 @@
 	<div class="message-wrapper">
 		<div class="message-autor">{{name}} <span>{{time ? (time | date:'HH:mm') : ''}}</span></div>
 		<div class="message-text">
-			<div class="message-label" [ngClass]="{italic: isNewChat, 'light-color': isNewChat}">
-				<span *ngIf="IAM" class="iam">Я</span> {{msg}}
+			<div class="message-label" 
+				[ngClass]="{italic: isNewChat || writes, 'light-color': isNewChat}">
+				
+				<div class="load" *ngIf="writes"></div>
+				<span *ngIf="writes">Набирает сообщение..</span>
+
+				<span *ngIf="!writes" [ngClass]="{'new-msg-no-read': !read}">
+					<span *ngIf="IAM" class="iam">Я</span> {{msg}}
+				</span>
 			</div>
 		</div>
 	</div>

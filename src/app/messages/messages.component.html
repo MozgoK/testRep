@@ -8,10 +8,12 @@
 	</div>
 
 	<msg-in-list
-		*ngFor="let item of sortedList"
+		*ngFor="let item of service.sortedList"
 		[name]="item.name"
 		[avatar]="item.avatar"
-		[lastMsg]="listLastMessage[item.id].lastMessage"
+		[lastMsg]="service.listLastMessage[item.id].msg"
+		[writes]="item.writes"
+		[read]="service.refContacts[item.id].read"
 
 		[routerLink]="['/messages']" 
 		[queryParams]="{id : item.id}"
@@ -27,26 +29,25 @@
 		</div>
 	</div>
 
-	<div *ngIf="messageArray">
+	<div *ngIf="service.messages[id]">
 		<msg 
-			*ngFor="let msg of messageArray" 
+			*ngFor="let msg of service.messages[id]" 
 			[msgArray]="msg.messages" 
 			[author]="msg.go === 'out' ? service.myName : contact.name"
 			[time]="msg.date"
 			[avatar]="msg.go === 'out' ? service.myAvatar : contact.avatar"
 		></msg>
 	</div>
-	<div *ngIf="!messageArray" class="new-chat">Сообщений пока нет, будьте первым кто напишет.</div>
+	<div *ngIf="!service.messages[id]" class="new-chat">Сообщений пока нет, будьте первым кто напишет.</div>
 
 	<div class="answer">
-		<span [ngStyle]="{animation: service.writes ? 'show  2s infinite linear' : ''}">{{contact.name}} пишет..</span>
+		<span [ngStyle]="{animation: service.refContacts[id].writes ? 'show  2s infinite linear' : ''}">{{contact.name}} пишет..</span>
 	</div>
-
 
 	<div class="message light">
 		<div class="message-wrapper">
 			<input type="text" 
-				[(ngModel)]="newMessage" 
+				[(ngModel)]="service.refContacts[id].newMsg" 
 				(keydown)="enter($event)"
 				placeholder="Сообщение">
 		</div>

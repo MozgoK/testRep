@@ -1,13 +1,26 @@
+import { Injectable } from '@angular/core';
+import * as _ from 'underscore';
+
+@Injectable()
+
 export class MainService {
 	viewLoader: boolean = false;
 	viewMenu: boolean = false;
 
 	myName: string = 'Basil';
-	myAvatar: string = 'https://imgur.com/njFu5Im.jpg';
+	myAvatar: string = 'https://imgur.com/L3MD9ZS.jpg';
 
 	writes: boolean = false;
 
 	url: string;
+
+
+	listLastMessage: any = {};
+	sortedList: any = [];
+
+	refContacts: any = [];
+
+	read: number = null;
 
 	stages = {
 		1: false,
@@ -24,14 +37,16 @@ export class MainService {
 
 
 	listContacts: any = [
-		{id: 1, name: 'Виктория', avatar: 'https://imgur.com/LQpU6MT.jpg'},
-		{id: 2, name: 'Павел', avatar: 'https://imgur.com/Jtu08lz.jpg'},
-		{id: 3, name: 'Йода', avatar: 'https://imgur.com/LQpU6MT.jpg'},
-		{id: 4, name: 'Денис', avatar: 'https://imgur.com/1tlJFNd.jpg'},
+		{id: 1, name: 'Виктория', avatar: 'https://imgur.com/LQpU6MT.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
+		{id: 2, name: 'Павел', avatar: 'https://imgur.com/Jtu08lz.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
+		{id: 3, name: 'Йода', avatar: 'https://imgur.com/njFu5Im.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
+		{id: 4, name: 'Денис', avatar: 'https://imgur.com/1tlJFNd.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
+		{id: 5, name: 'Лиза', avatar: 'https://imgur.com/g5hSpRA.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
+		{id: 6, name: 'Журавль', avatar: 'https://imgur.com/mwDN7GW.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
 	];
 
 	messages: any = {
-		'1': [
+		'3': [
 			{go: 'out', date: new Date(2011, 0, 1, 2, 3, 4, 567), messages: ['Lorem ipsum dolor.']},
 			{go: 'in', date: new Date(2011, 0, 1, 4, 10, 4, 567), messages: ['Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil.','Lorem ipsum.']},
 			{go: 'out', date: new Date(2011, 0, 1, 4, 12, 4, 567), messages: ['Lorem ipsum dolor sit amet, consectetur.','Lorem ipsum.']},
@@ -40,43 +55,193 @@ export class MainService {
 	}
 
 
+	// Получаем информацию о контакте
+	getContactInfo(id): any {
+	  let contact = _.find(this.listContacts, (el)=>{ return el.id === id; });
+	  return contact;
+	}
+
+	// Получаем список последних сообщений и сортированный список
+	getLastMessages(): void {
+	  this.listLastMessage = {};
+
+	  // Создание списка последних сообщений
+	  this.listContacts.forEach((el, ind, arr)=>{
+	    let temp = this.messages[el.id];
+
+	    this.listLastMessage[el.id] = {};
+	    this.listLastMessage[el.id].msg 
+	      = temp
+	        ? temp[temp.length-1]
+	        : null;
+	  });
+
+	  // Сортировка "новые сообщения вверх"
+	  this.sortedList = _.sortBy(this.listContacts, (el)=>{
+	    return this.listLastMessage[el.id].msg
+	      ? -this.listLastMessage[el.id].msg.date.getTime()
+	      : -1;
+	  });
+	}
+
+
+	getMessages(id): void {
+	    // let messageArray = this.messages[id];
+
+	    if (this.messages[id]){
+	      this.getLastMessage(id);
+	    } else {
+	      this.refContacts[id].lastMsg = null;
+	    }
+
+	    this.refContacts[id].newMsg = '';
+	    this.refContacts[id].writes = false;
+	    this.refContacts[id].stages = {
+	      1: false,
+	      2: false,
+	      3: false,
+	      4: false,
+	      5: false,
+	      6: false,
+	      7: false,
+	      8: false,
+	      end: false,
+	      check: [0,0,0,0,0,0,0,0]
+	    }
+
+
+	}  
+
+
+	getLastMessage(id): void {
+	    this.refContacts[id].lastMsg = this.messages[id][this.messages[id].length-1];
+	}
+
+
+	sendMsg(id): void {
+
+	  if (this.refContacts[id].lastMsg 
+	  		&& this.refContacts[id].lastMsg.go === 'out'){
+
+	    this.refContacts[id].lastMsg.messages.push(this.refContacts[id].newMsg);
+
+	  } else {
+
+	    // Создаем запись в объекте сообщений
+	    if (!this.refContacts[id].lastMsg) {
+	      this.messages[id] = [];
+	    }
+
+	    this.messages[id].push({
+	      go:'out', 
+	      messages: [this.refContacts[id].newMsg], 
+	      date: new Date(), 
+	      name: this.myName
+	    });
+
+	    this.getLastMessage(id);
+	  }
 
 
 
-	respondTo(input): string[] {
+	  this.answerMsg(id, this.refContacts[id].newMsg);
+
+	  // this.temp = this.refContacts[id].newMsg;
+	  this.refContacts[id].newMsg = '';
+	}
+
+
+
+	answerMsg(id, msg): void {
+
+	  // console.log(this.refContacts[id].stages.end);
+	  if (this.refContacts[id].stages.end) return;
+
+	  let answArray = this.respondTo(id, msg);
+	  
+	  if (!answArray) return;
+
+
+	  let period = 5200 / answArray.length;
+
+
+	  setTimeout(()=>{
+	    this.refContacts[id].writes = true;
+	  }, 1200);
+
+
+	  answArray.forEach((e, ind)=>{
+	    setTimeout(()=>{
+
+	      if ((ind === 0 && this.refContacts[id].lastMsg.go === 'out') 
+	      		|| this.refContacts[id].lastMsg.go === 'out') {
+
+	        this.messages[id].push({
+	          go:'in', 
+	          messages: [e], 
+	          date: new Date(), 
+	          name: this.getContactInfo(id).name
+	        });
+	      } else {
+	        this.refContacts[id].lastMsg.messages.push(e);
+	      }
+
+
+
+	      // Скидываем флаг, что кто то пишет
+	      if (ind === answArray.length - 1) {
+	      	this.refContacts[id].writes = false;
+
+	      	this.refContacts[id].read =
+	      		this.read === id
+	      			? true
+	      			: false;
+
+	      	this.getLastMessages();
+	      }
+
+	      this.getLastMessage(id);
+
+	    }, period*(ind + 1));
+	  });
+	}
+
+
+
+	respondTo(id, input): string[] {
 
 		let answer: string[] = [];
 	
 		input = input.toLowerCase();
 		
 		if (this.match('(привет|здравствуй|приветствую|здрасте|здарова|хай|hi|прива|прив|здоров)(\\s|!|\\.|$)', input))
-			answer.push(this.testAnswer(1, this.getRandomInt(1, 5)));
+			answer.push(this.testAnswer(id, 1, this.getRandomInt(1, 5)));
 
 		
 		if(this.match('как дела', input) || this.match('как жизнь', input)  || this.match('как поживаешь', input) || this.match('как ты', input))
-			answer.push(this.testAnswer(2, this.getRandomInt(1, 6)));
+			answer.push(this.testAnswer(id, 2, this.getRandomInt(1, 6)));
 
 		if (this.match('(хорошо|отлично|прекрасно|здоровски)(\\s|!|\\.|$)', input))
-			answer.push(this.testAnswer(3, this.getRandomInt(1, 3)));
+			answer.push(this.testAnswer(id, 3, this.getRandomInt(1, 3)));
 
 		if(this.match('молоко', input))
-			answer.push(this.testAnswer(4, 1));
+			answer.push(this.testAnswer(id, 4, 1));
 
 		if(this.match('ха', input) || this.match('хи', input) || this.match('лол', input)  || this.match('смешной', input))
-			answer.push(this.testAnswer(5, this.getRandomInt(1, 4)));
+			answer.push(this.testAnswer(id, 5, this.getRandomInt(1, 4)));
 
 		if(this.match('нет', input))
-			answer.push(this.testAnswer(6, 1));
+			answer.push(this.testAnswer(id, 6, 1));
 
 		if(this.match('бот', input))
-			answer.push(this.testAnswer(7, this.getRandomInt(1, 2)));
+			answer.push(this.testAnswer(id, 7, this.getRandomInt(1, 2)));
 		
 
 		if (this.match('(пока|досвид|прощай|покеда|bye)(\\s|!|\\.|$)', input))
-			answer.push(this.testAnswer(8, this.getRandomInt(1, 6)));
+			answer.push(this.testAnswer(id, 8, this.getRandomInt(1, 6)));
 
 
-		if (!answer.length) {answer.push(this.testAnswer(9, this.getRandomInt(1, 3)));}
+		if (!answer.length) {answer.push(this.testAnswer(id, 9, this.getRandomInt(1, 3)));}
 
 		return answer;
 	}
@@ -188,21 +353,20 @@ export class MainService {
 		}
 	}
 
-	testAnswer(stage, number): string {
-		if (this.stages[stage] && !this.stages.end){
+	testAnswer(id, stage, number): string {
+		if (this.refContacts[id].stages[stage] && !this.refContacts[id].stages.end){
 
-			if (this.stages.check[stage-1] === 0) {
-				this.stages.check[stage-1]++;
+			if (this.refContacts[id].stages.check[stage-1] === 0) {
+				this.refContacts[id].stages.check[stage-1]++;
 				return this.answers.yet[stage][number];
 			} else {
 				return 'куриные мозги?;)';
 			}
-			// yet
 			
 		} else {
-			this.stages[stage] = true;
+			this.refContacts[id].stages[stage] = true;
 
-			if (stage === 8) this.stages.end = true;
+			if (stage === 8) this.refContacts[id].stages.end = true;
 			return this.answers.new[stage][number];
 		}
 	}

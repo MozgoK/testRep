@@ -15,6 +15,7 @@ import { MainService } from './service/main.service';
 import { MessagesComponent } from './messages/messages.component';
 import { MsgComponent } from './msg/msg.component';
 import { MsgInListComponent } from './msg.in.list/msg.in.list.component';
+import { EditlabelComponent } from './editlabel/editlabel.component';
 
 const appRoutes: Routes = [
   { path: '', component: AuthComponent },
@@ -30,7 +31,8 @@ const appRoutes: Routes = [
     DesktopComponent,
     MessagesComponent,
     MsgComponent,
-    MsgInListComponent
+    MsgInListComponent,
+    EditlabelComponent
   ],
   imports: [
     BrowserModule,

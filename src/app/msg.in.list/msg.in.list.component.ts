@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'msg-in-list',
@@ -10,6 +10,8 @@ export class MsgInListComponent implements OnInit {
   @Input() lastMsg: any;
   @Input() name: string;
   @Input() avatar: string;
+  @Input() writes: boolean;
+  @Input() read: boolean;
   msg: string;
   isNewChat: boolean = false;
   IAM: boolean = false;
@@ -18,6 +20,23 @@ export class MsgInListComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    
+  }
+
+  checkMsg() {
+    if (this.msg.length > 75) {
+      this.msg = this.msg.substr(0, 75) + '..';
+    }
+    this.IAM = !!(this.lastMsg.go === 'out')
+    // if (this.lastMsg.go === 'out') {
+    //   this.IAM = true;
+    // } else {
+
+    // }
+  }
+
+  ngOnChanges() {
+    // console.log(this.lastMsg);
     if (this.lastMsg){
       this.msg = this.lastMsg.messages[this.lastMsg.messages.length-1];
       this.time = this.lastMsg.date;
@@ -26,14 +45,5 @@ export class MsgInListComponent implements OnInit {
       this.msg = 'Это новый чат с другом..';
       this.isNewChat = true;
     }
-  }
-
-  checkMsg() {
-    if (this.msg.length > 75) {
-      this.msg = this.msg.substr(0, 75) + '..';
-    }
-    if (this.lastMsg.go === 'out') {
-      this.IAM = true;
-    }
-  }
+   }
 }

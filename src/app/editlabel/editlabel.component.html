@@ -1,0 +1,8 @@
+<input type="text"
+	[(ngModel)]="value" 
+	[disabled]="disabled"
+	[ngStyle]="{width: value.length*8 + 'px' }"
+	#input
+>
+<label (click)="edit(input)" [hidden]="!disabled">✎</label>
+<label (click)="save()" [hidden]="disabled">✔</label>

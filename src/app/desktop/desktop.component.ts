@@ -16,4 +16,10 @@ export class DesktopComponent implements OnInit {
     setTimeout(()=>{this.service.viewLoader = false;},100);
   }
 
+  newValue(e):void {
+  	if (e.name === 'name'){
+  		this.service.myName = e.value;
+  	};
+  }
+
 }

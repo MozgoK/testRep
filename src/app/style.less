@@ -1,31 +1,13 @@
-body {
-	padding: 0;
-	margin: 0;
-	font-family: 'Roboto', sans-serif;
-	background: #303030;
-	color: white;
-}
+@color: #40a8cc;
+
+
 .row {
-	width: 500px;
-	height: 500px;
-	margin: 100px auto;
+	width: 100%;
 	padding: 15px;
-	border-radius: 3px;
-	background: rgba(154, 205, 50, .4);
+	box-sizing: border-box;
 }
 
-.loader {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	// background: rgba(40,70,200,.5);
-	z-index: 100;
-	justify-content: center;
-    align-items: center;
-}
+
 
 .avatar {
 	height: 150px;
@@ -40,6 +22,63 @@ body {
 		animation: msg-show2 .5s linear;
 		border-radius: 50%;
 		border: 1px solid red;
+	}
+}
+
+.half {
+	float: left;
+
+	&:nth-child(1) {
+		width: 150px;
+	}
+	&:nth-child(2) {
+		padding-left: 30px;
+	}
+
+	& label {
+		font-size: 13px;
+		padding-right: 5px;
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	& .avatar {
+		margin: 0 auto;
+	}
+}
+
+editlabel {
+	animation: msg-show2 .5s linear;
+
+	& label {
+		color: @color;
+		cursor: pointer;
+
+		&:hover {
+			color: @color;
+		}
+	}
+
+	& input {
+		background: transparent;
+	    border: none;
+	    border-bottom: 2px solid #fff;
+	    color: white;
+	    padding: 5px;
+	    width: auto;
+	    text-align: center;
+	    max-width: 200px;
+
+	    &[disabled] {
+	    	border-color: transparent !important;
+	    	&:focus {
+	    		border-color: transparent !important;
+	    	}
+	    }
+
+	    &:focus {
+	    	outline: none;
+	    	border-color: @color;
+	    }
 	}
 }
 
@@ -234,13 +273,13 @@ msg .message, msg-in-list .message {
 span.iam {
 	color: #000;
     display: inline-block;
-    background: #CDDC39;
-    height: 15px;
-    width: 15px;
+    background: @color;
+    height: 14px;
+    width: 14px;
     line-height: 15px;
     text-align: center;
     border-radius: 50%;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -250,7 +289,10 @@ msg-in-list {
 		outline: none;
 	}
 	&:hover .message {
-		background: #585858;
+
+		// transition: box-shadow .2s;
+		// background: #585858;
+		box-shadow: 0 0 3px 1px @color,0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 		cursor: pointer;
 	}
 }
@@ -268,10 +310,10 @@ msg-in-list {
     min-width: 120px;
 
 	&:hover,.active {
-		background: #424242;
+		background: @color;
 	}
 	&.active {
-		background: #424242;
+		background: @color; //#424242;
 	}
 
 	&:focus {
@@ -279,103 +321,25 @@ msg-in-list {
 	}
 }
 
-.container-spanner circle {
-    transition-property: stroke;
-    animation-duration: 4s;
-    animation-timing-function: cubic-bezier(.35,0,.25,1);
-    animation-iteration-count: infinite;
 
-    fill: transparent;
-    transform-origin: center;
-    transition: stroke-dashoffset 225ms linear;
+.load {
+	display: inline-block;
+    height: 10px;
+    width: 47px;
+    background: url(https://imgur.com/NVgJ9e8.gif) no-repeat;
+    background-size: auto 7px;
+    background-position: left bottom;
 
-    animation-name: mat-progress-spinner-stroke-rotate-100; 
-    stroke-dasharray: 282.743px; 
-    stroke-width: 5%;
-
-    stroke: #9c27b0;
-}
-
-.container-spanner {
-    animation: mat-progress-spinner-linear-rotate 2s linear infinite;
-    width: 50px; 
-    height: 50px;
-    & svg {
-    	width: 50px; 
-    	height: 50px;
+    &:hover {
+    	background-image: url(https://imgur.com/QKOLZKv.gif);
     }
 }
 
-@keyframes mat-progress-spinner-linear-rotate {
-	0% {transform: rotate(0);}
-	100% {transform: rotate(360deg);}
+
+
+.new-msg-no-read {
+	background: @color;
+    padding: 2px 10px;
+    font-size: 12px;
+    border-radius: 2px;
 }
-
-@keyframes mat-progress-spinner-stroke-rotate-100 {
-	0% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotate(0);
-	}
-	12.5% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotate(0);
-	}
-	12.51% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotateX(180deg) rotate(72.5deg);
-	}
-	25% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotateX(180deg) rotate(72.5deg);
-	}
-	25.1% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotate(270deg);
-	}
-	37.5% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotate(270deg);
-	}
-	37.51% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotateX(180deg) rotate(161.5deg);
-	}
-	50% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotateX(180deg) rotate(161.5deg);
-	}
-	50.01% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotate(180deg);
-	}
-	62.5% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotate(180deg);
-	}
-	62.51% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotateX(180deg) rotate(251.5deg);
-	}
-	75% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotateX(180deg) rotate(251.5deg);
-	}
-	75.01% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotate(90deg);
-	}
-	87.5% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotate(90deg);
-	}
-	87.51% {
-	    stroke-dashoffset: 56.54867px;
-	    transform: rotateX(180deg) rotate(341.5deg);
-	}
-	100% {
-	    stroke-dashoffset: 268.60617px;
-	    transform: rotateX(180deg) rotate(341.5deg);
-	}
-}
-
-

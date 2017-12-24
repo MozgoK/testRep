@@ -1,4 +1,28 @@
-<p>
-  desktop works!
-</p>
-<button routerLink="/">Назад</button>
+<div class="message light">
+	<!-- <div class="message-back"><a routerLink="/desk"><span>🢐</span>  Назад</a></div> -->
+	<div class="message-wrapper">
+		Моя страница
+	</div>
+</div>
+
+
+<div class="row message">
+	<div class="half">
+		<div class="avatar">
+			<img src="https://imgur.com/L3MD9ZS.jpg" alt="">
+		</div>
+	</div>
+	<div class="half">
+
+		<div>
+			<label>Имя:</label>
+			<editlabel [value]="service.myName" name="name" (onSave)="newValue($event)"></editlabel>
+		</div>
+
+		<div>
+			<label>Дата рождения:</label>
+			<editlabel [value]="'13.05.1991'" name="date"></editlabel>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
