@@ -5,8 +5,7 @@ import { MainService } from '../service/main.service';
 
 @Component({
   selector: 'app-desktop',
-  templateUrl: './desktop.component.html',
-  styleUrls: ['./desktop.component.css']
+  templateUrl: './desktop.component.html'
 })
 export class DesktopComponent implements OnInit {
 

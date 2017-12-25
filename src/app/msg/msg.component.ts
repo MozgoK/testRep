@@ -2,8 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'msg',
-  templateUrl: './msg.component.html',
-  styleUrls: ['./msg.component.css']
+  templateUrl: './msg.component.html'
 })
 export class MsgComponent implements OnInit {
 

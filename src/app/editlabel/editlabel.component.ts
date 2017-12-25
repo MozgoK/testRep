@@ -3,8 +3,7 @@ import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'editlabel',
-  templateUrl: './editlabel.component.html',
-  styleUrls: ['./editlabel.component.css']
+  templateUrl: './editlabel.component.html'
 })
 export class EditlabelComponent implements OnInit {
 

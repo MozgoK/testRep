@@ -8,42 +8,45 @@ export class MainService {
 	viewMenu: boolean = false;
 
 	myName: string = 'Basil';
-	myAvatar: string = 'https://imgur.com/L3MD9ZS.jpg';
-
-	writes: boolean = false;
-
-	url: string;
+	myAvatar: string = 'img/logo-0.jpg';
 
 
+	// writes: boolean = false;
+
+
+	// Флаг попал ли пользователь на страницу авторизации
+	firstPageIsAuth: boolean;
+
+	// Список с последними сообщениями
 	listLastMessage: any = {};
+	// Отсортированный список контактов в зависимости от списка последних сообщений
 	sortedList: any = [];
 
-	refContacts: any = [];
-
+	// Флаг можем ли мы читать сейчас сообщения от кого-то
 	read: number = null;
 
-	stages = {
-		1: false,
-		2: false,
-		3: false,
-		4: false,
-		5: false,
-		6: false,
-		7: false,
-		8: false,
-		end: false,
-		check: [0,0,0,0,0,0,0,0]
+
+	// Класс шагов
+	Stages = class Stages {
+		check: Array<any>;
+		end: boolean;
+
+		constructor(){
+			this[1] = this[2] = this[3] = this[4] = this[5] = this[6] = this[7] = this[8] = this.end = false;
+			this.check = [0,0,0,0,0,0,0,0];
+		}
 	}
 
 
 	listContacts: any = [
-		{id: 1, name: 'Виктория', avatar: 'https://imgur.com/LQpU6MT.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
-		{id: 2, name: 'Павел', avatar: 'https://imgur.com/Jtu08lz.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
-		{id: 3, name: 'Йода', avatar: 'https://imgur.com/njFu5Im.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
-		{id: 4, name: 'Денис', avatar: 'https://imgur.com/1tlJFNd.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
-		{id: 5, name: 'Лиза', avatar: 'https://imgur.com/g5hSpRA.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
-		{id: 6, name: 'Журавль', avatar: 'https://imgur.com/mwDN7GW.jpg', lastMsg: [], writes: false, newMsg: '', read: true},
+		{id: 1, name: 'Виктория', avatar: 'img/logo-4.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
+		{id: 2, name: 'Павел', avatar: 'img/logo-1.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
+		{id: 3, name: 'Йода', avatar: 'img/logo-2.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
+		{id: 4, name: 'Денис', avatar: 'img/logo-3.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
+		{id: 5, name: 'Лиза', avatar: 'img/logo-5.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
+		{id: 6, name: 'Журавль', avatar: 'img/logo-6.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
 	];
+
 
 	messages: any = {
 		'3': [
@@ -54,12 +57,26 @@ export class MainService {
 		],
 	}
 
+	// Массив ссылок на аккаунты
+	refContacts: any = this.initRefsContacts();
+
+	initRefsContacts(): any {
+		let temp = [];
+
+		this.listContacts.forEach((el)=>{
+		  temp[el.id] = el;
+		  el.stages = new this.Stages;
+		});
+
+		return temp;
+	}
+
 
 	// Получаем информацию о контакте
-	getContactInfo(id): any {
-	  let contact = _.find(this.listContacts, (el)=>{ return el.id === id; });
-	  return contact;
-	}
+	// getContactInfo(id): any {
+	//   let contact = _.find(this.listContacts, (el)=>{ return el.id === id; });
+	//   return contact;
+	// }
 
 	// Получаем список последних сообщений и сортированный список
 	getLastMessages(): void {
@@ -86,30 +103,12 @@ export class MainService {
 
 
 	getMessages(id): void {
-	    // let messageArray = this.messages[id];
-
 	    if (this.messages[id]){
 	      this.getLastMessage(id);
 	    } else {
 	      this.refContacts[id].lastMsg = null;
 	    }
-
-	    this.refContacts[id].newMsg = '';
-	    this.refContacts[id].writes = false;
-	    this.refContacts[id].stages = {
-	      1: false,
-	      2: false,
-	      3: false,
-	      4: false,
-	      5: false,
-	      6: false,
-	      7: false,
-	      8: false,
-	      end: false,
-	      check: [0,0,0,0,0,0,0,0]
-	    }
-
-
+	    // this.refContacts[id].newMsg = '';
 	}  
 
 
@@ -142,56 +141,65 @@ export class MainService {
 	    this.getLastMessage(id);
 	  }
 
-
-
-	  this.answerMsg(id, this.refContacts[id].newMsg);
-
-	  // this.temp = this.refContacts[id].newMsg;
+	  this.answerMsg(id, this.refContacts[id].newMsg, 1200, null);
 	  this.refContacts[id].newMsg = '';
 	}
 
 
+	// (id, схематичное сообщение, задержка, заданный ответ)
+	answerMsg(id, msg, delay, customAnsw): void {
 
-	answerMsg(id, msg): void {
+	let answArray: any;
 
-	  // console.log(this.refContacts[id].stages.end);
-	  if (this.refContacts[id].stages.end) return;
+	  if (msg) {
+		  // Если попрощались то не ответит;)
+		  if (this.refContacts[id].stages.end) return;
 
-	  let answArray = this.respondTo(id, msg);
+		  // Массив с ответами
+		  answArray = this.respondTo(id, msg);
+	  } else {
+	  	answArray = customAnsw;
+	  }
 	  
 	  if (!answArray) return;
 
 
-	  let period = 5200 / answArray.length;
-
-
+	  let period = (delay + 4000) / answArray.length;
 	  setTimeout(()=>{
 	    this.refContacts[id].writes = true;
-	  }, 1200);
+	  }, delay);
 
 
 	  answArray.forEach((e, ind)=>{
 	    setTimeout(()=>{
 
-	      if ((ind === 0 && this.refContacts[id].lastMsg.go === 'out') 
-	      		|| this.refContacts[id].lastMsg.go === 'out') {
+	      if ((ind === 0 && !this.refContacts[id].lastMsg) //*****
+	      		|| (ind === 0 && this.refContacts[id].lastMsg.go === 'out') 
+	      		|| this.refContacts[id].lastMsg.go === 'out' ) {
+
+	      	// Создаем запись в объекте сообщений*****
+	      	if (!this.refContacts[id].lastMsg) {
+	      	  this.messages[id] = [];
+	      	}
 
 	        this.messages[id].push({
 	          go:'in', 
 	          messages: [e], 
 	          date: new Date(), 
-	          name: this.getContactInfo(id).name
+	          name: this.refContacts[id].name
 	        });
+
 	      } else {
+
 	        this.refContacts[id].lastMsg.messages.push(e);
 	      }
-
 
 
 	      // Скидываем флаг, что кто то пишет
 	      if (ind === answArray.length - 1) {
 	      	this.refContacts[id].writes = false;
 
+	      	// Отмечаем прочитались ли сообщения
 	      	this.refContacts[id].read =
 	      		this.read === id
 	      			? true
@@ -211,12 +219,11 @@ export class MainService {
 	respondTo(id, input): string[] {
 
 		let answer: string[] = [];
-	
 		input = input.toLowerCase();
 		
+
 		if (this.match('(привет|здравствуй|приветствую|здрасте|здарова|хай|hi|прива|прив|здоров)(\\s|!|\\.|$)', input))
 			answer.push(this.testAnswer(id, 1, this.getRandomInt(1, 5)));
-
 		
 		if(this.match('как дела', input) || this.match('как жизнь', input)  || this.match('как поживаешь', input) || this.match('как ты', input))
 			answer.push(this.testAnswer(id, 2, this.getRandomInt(1, 6)));
@@ -236,12 +243,11 @@ export class MainService {
 		if(this.match('бот', input))
 			answer.push(this.testAnswer(id, 7, this.getRandomInt(1, 2)));
 		
-
 		if (this.match('(пока|досвид|прощай|покеда|bye)(\\s|!|\\.|$)', input))
 			answer.push(this.testAnswer(id, 8, this.getRandomInt(1, 6)));
 
-
 		if (!answer.length) {answer.push(this.testAnswer(id, 9, this.getRandomInt(1, 3)));}
+
 
 		return answer;
 	}
@@ -254,7 +260,6 @@ export class MainService {
 	getRandomInt(min, max): number {
 	  return Math.floor(Math.random() * (max - min)) + min;
 	}
-
 
 	answers = {
 		new: {

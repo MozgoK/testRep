@@ -14,6 +14,7 @@
 		[lastMsg]="service.listLastMessage[item.id].msg"
 		[writes]="item.writes"
 		[read]="service.refContacts[item.id].read"
+		[isNewChat]="!service.listLastMessage[item.id].msg "
 
 		[routerLink]="['/messages']" 
 		[queryParams]="{id : item.id}"

@@ -12,7 +12,7 @@ export class AuthService {
 			if (this.isLoggedIn) {
 				resolve(this.isLoggedIn);
 			} else {
-				if (this.service.url === '/' && this.logIn()) {
+				if (this.service.firstPageIsAuth && this.logIn()) {
 					setTimeout(()=>{
 						resolve(this.isLoggedIn);
 					}, 1500);

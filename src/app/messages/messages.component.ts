@@ -6,8 +6,7 @@ import * as _ from 'underscore';
 
 @Component({
   selector: 'app-messages',
-  templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.css']
+  templateUrl: './messages.component.html'
 })
 export class MessagesComponent implements OnInit {
   flagList: boolean = true;
@@ -26,18 +25,14 @@ export class MessagesComponent implements OnInit {
   constructor(private route: ActivatedRoute, private service: MainService, private router: Router) { }
 
   ngOnInit() {
-    this.service.listContacts.forEach((el)=>{
-      this.service.refContacts[el.id] = el;
-    });
-
+    
     this.route.queryParams.subscribe((params: Params)=>{
 
       if (params['id']) {
         this.id = +params['id'];
 
         // Получаем информацию о контакте
-        this.contact = this.service.getContactInfo(this.id);
-        // console.log(this.contact);
+        this.contact = this.service.refContacts[this.id];//this.service.getContactInfo(this.id);
 
         if (!this.contact) {
           // Если информацию о контакте получить не удалось

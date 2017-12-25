@@ -4,7 +4,7 @@
 
 
 <div class="avatar">
-	<img *ngIf="visibleAvatar" src="https://imgur.com/L3MD9ZS.jpg" alt="">
+	<img *ngIf="visibleAvatar" [src]="service.myAvatar" alt="">
 </div>
 
 <div class="auth-form message light">
@@ -29,4 +29,4 @@
 	</div>
 </div>
 
-<button class="btn auth-btn" [disabled]="viewLoader" (click)="logIn()">ОК</button>
+<button class="btn auth-btn" style="justify-content: center" [disabled]="viewLoader" (click)="logIn()">ОК</button>

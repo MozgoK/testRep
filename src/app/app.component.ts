@@ -8,7 +8,7 @@ import { AuthService } from './service/auth.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./style.less'],
+  styleUrls: ['./main.style.less'],
   encapsulation: ViewEncapsulation.None
   // style: [STYLES]
 })

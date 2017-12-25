@@ -6,8 +6,7 @@ import { MainService } from '../service/main.service';
 
 @Component({
   selector: 'auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css']
+  templateUrl: './auth.component.html'
 })
 export class AuthComponent implements OnInit {
 
@@ -17,7 +16,7 @@ export class AuthComponent implements OnInit {
   constructor(private router: Router, private auth: AuthService, private service: MainService) { }
 
   ngOnInit(): void {
-    this.service.url = this.router.url;
+    this.service.firstPageIsAuth = true;
   }
 
   logIn(): void {
@@ -26,6 +25,7 @@ export class AuthComponent implements OnInit {
 
     setTimeout(()=>{
       this.visibleAvatar = true;
+      this.service.answerMsg(6, null, 5000, ['почти приветствие','ну и пока)']);
     }, 400);
   }
 

@@ -2,8 +2,7 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'msg-in-list',
-  templateUrl: './msg.in.list.component.html',
-  styleUrls: ['./msg.in.list.component.css']
+  templateUrl: './msg.in.list.component.html'
 })
 export class MsgInListComponent implements OnInit {
 
@@ -12,8 +11,8 @@ export class MsgInListComponent implements OnInit {
   @Input() avatar: string;
   @Input() writes: boolean;
   @Input() read: boolean;
+  @Input() isNewChat: boolean = false;
   msg: string;
-  isNewChat: boolean = false;
   IAM: boolean = false;
   time: Date;
 
