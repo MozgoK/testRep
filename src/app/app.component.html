@@ -21,7 +21,12 @@
         <li class="btn" 
           [routerLink]="['/messages']" 
           routerLinkActive="active"
-        >Мои сообщения <span class="btn-num">1</span></li>
+        >Мои сообщения
+
+          <span class="btn-num animate" 
+            [ngStyle]="{'display': service.numNewMsg === 0 ? 'none' : 'inline-flex'}"
+          >{{service.numNewMsg}}</span>
+        </li>
 
         <li class="btn" (click)="exit()">Выход</li>
       </ul>
@@ -39,7 +44,7 @@
 
   <div class="block">
     <div class="right-bar" *ngIf="service.viewMenu">
-      что-то еще..
+      <!-- что-то еще.. -->
     </div>
   </div>
 

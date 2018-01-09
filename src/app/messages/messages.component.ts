@@ -13,11 +13,6 @@ export class MessagesComponent implements OnInit {
   id: number;
   contact: any;
   messageArray: any;
-  newMessage: string;
-  lastMessage: any;
-  listLastMessage: any;
-  sortedList: any;
-  // whoLast: string;
 
   temp: string;
   answerText: string;
@@ -45,7 +40,12 @@ export class MessagesComponent implements OnInit {
           this.service.read = this.id;
           this.service.refContacts[this.id].read = true;
 
+          // Обновляем количество нечитанных диалогов
+          this.service.numNewMsg = this.service.countNewMsg(this.service.sortedList);
+
           this.service.getMessages(this.id);
+
+          setTimeout(() => document.getElementById('input').focus(), 100);
         }
 
 
@@ -63,16 +63,7 @@ export class MessagesComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
-
-
-
-
+  // Отправляем сообщение
   enter(e): void{
     if (e.code.toLowerCase() === 'enter' && this.service.refContacts[this.id].newMsg) {
       this.service.sendMsg(this.id);

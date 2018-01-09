@@ -1,8 +1,3 @@
-
-
-
-
-
 <div class="avatar">
 	<img *ngIf="visibleAvatar" [src]="service.myAvatar" alt="">
 </div>
@@ -13,7 +8,7 @@
 			[disabled]="viewLoader" 
 			[(ngModel)]="name" 
 			(keydown)="enter($event)"
-			[ngStyle]="{'border-bottom-color': name ? '#CDDC39' : ''}"
+			[ngStyle]="{'border-bottom-color': name ? '#40a8cc' : ''}"
 			placeholder="Имя">
 	</div>
 </div>
@@ -24,9 +19,19 @@
 			[disabled]="viewLoader" 
 			[(ngModel)]="pass" 
 			(keydown)="enter($event)"
-			[ngStyle]="{'border-bottom-color': pass ? '#CDDC39' : ''}"
+			[ngStyle]="{'border-bottom-color': pass ? '#40a8cc' : ''}"
 			placeholder="Пароль">
 	</div>
 </div>
 
 <button class="btn auth-btn" style="justify-content: center" [disabled]="viewLoader" (click)="logIn()">ОК</button>
+
+
+
+<div class="auth-form message light alert animate" *ngIf="alert">
+	<div class="message-wrapper">
+		<span [hidden]="!alertName">Введите корректный логин</span>
+		<br [hidden]="!alertBr">
+		<span [hidden]="!alertPass">Введите пароль</span>
+	</div>
+</div>

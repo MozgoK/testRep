@@ -1,7 +1,43 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'underscore';
 
+
 @Injectable()
+
+
+// Класс шагов	
+class Stages {
+	check: Array<number>;
+	end: boolean;
+
+	constructor(){
+		this[1] = this[2] = this[3] = this[4] = this[5] = this[6] = this[7] = this[8] = this.end = false;
+		this.check = [0,0,0,0,0,0,0,0];
+	}
+}
+
+type User = {
+	id: number,
+	name: string,
+	avatar: string,
+	lastMsg: Msg | null,
+	writes: boolean,
+	newMsg: string,
+	read: boolean
+	stages?: Stages
+};
+
+type Msg = {
+	go: string,
+	date: Date,
+	messages: Array<string>
+}
+
+type LastMsg = {
+	msg: string | null
+}
+
+
 
 export class MainService {
 	viewLoader: boolean = false;
@@ -9,9 +45,6 @@ export class MainService {
 
 	myName: string = 'Basil';
 	myAvatar: string = 'img/logo-0.jpg';
-
-
-	// writes: boolean = false;
 
 
 	// Флаг попал ли пользователь на страницу авторизации
@@ -22,28 +55,19 @@ export class MainService {
 	// Отсортированный список контактов в зависимости от списка последних сообщений
 	sortedList: any = [];
 
+	// Количество новых сообщений
+	numNewMsg: number = 0;
+
 	// Флаг можем ли мы читать сейчас сообщения от кого-то
 	read: number = null;
 
 
-	// Класс шагов
-	Stages = class Stages {
-		check: Array<any>;
-		end: boolean;
-
-		constructor(){
-			this[1] = this[2] = this[3] = this[4] = this[5] = this[6] = this[7] = this[8] = this.end = false;
-			this.check = [0,0,0,0,0,0,0,0];
-		}
-	}
-
-
-	listContacts: any = [
+	listContacts: Array<User> = [
 		{id: 1, name: 'Виктория', avatar: 'img/logo-4.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
 		{id: 2, name: 'Павел', avatar: 'img/logo-1.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
 		{id: 3, name: 'Йода', avatar: 'img/logo-2.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
 		{id: 4, name: 'Денис', avatar: 'img/logo-3.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
-		{id: 5, name: 'Лиза', avatar: 'img/logo-5.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
+		{id: 5, name: 'Ева', avatar: 'img/logo-5.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
 		{id: 6, name: 'Журавль', avatar: 'img/logo-6.jpg', lastMsg: null, writes: false, newMsg: '', read: true},
 	];
 
@@ -57,6 +81,8 @@ export class MainService {
 		],
 	}
 
+
+
 	// Массив ссылок на аккаунты
 	refContacts: any = this.initRefsContacts();
 
@@ -65,80 +91,86 @@ export class MainService {
 
 		this.listContacts.forEach((el)=>{
 		  temp[el.id] = el;
-		  el.stages = new this.Stages;
+		  el.stages = new Stages;
 		});
 
 		return temp;
 	}
 
 
-	// Получаем информацию о контакте
-	// getContactInfo(id): any {
-	//   let contact = _.find(this.listContacts, (el)=>{ return el.id === id; });
-	//   return contact;
-	// }
 
-	// Получаем список последних сообщений и сортированный список
-	getLastMessages(): void {
-	  this.listLastMessage = {};
 
-	  // Создание списка последних сообщений
-	  this.listContacts.forEach((el, ind, arr)=>{
-	    let temp = this.messages[el.id];
 
-	    this.listLastMessage[el.id] = {};
-	    this.listLastMessage[el.id].msg 
-	      = temp
-	        ? temp[temp.length-1]
+	// Возвращает список последних сообщений
+	createListLastMsg(contacts: Array<User>, messeges: any): Array<LastMsg> {
+		let temp = [];
+
+		contacts.forEach((el) => {
+	    let tempMsg = messeges[el.id];
+
+	    temp[el.id] = {};
+	    temp[el.id].msg 
+	      = tempMsg
+	        ? tempMsg[tempMsg.length-1]
 	        : null;
 	  });
 
-	  // Сортировка "новые сообщения вверх"
-	  this.sortedList = _.sortBy(this.listContacts, (el)=>{
+	  return temp;
+	}
+
+	// Возвращает отсортированный список
+	createSortedList(contacts: Array<User>, listLastMsg: Array<LastMsg>){
+		return _.sortBy(this.listContacts, (el) => {
 	    return this.listLastMessage[el.id].msg
 	      ? -this.listLastMessage[el.id].msg.date.getTime()
 	      : -1;
 	  });
 	}
 
+	// Подсчитывает количество нечитанных диалогов
+	countNewMsg(sortedList: Array<any>): number{
+		return _.reduce(sortedList, (num, item) =>{
+			// console.log(item.read);
+			return item.read
+				? num
+				: num + 1;
+		}, 0);
+	}
 
-	getMessages(id): void {
-	    if (this.messages[id]){
-	      this.getLastMessage(id);
-	    } else {
-	      this.refContacts[id].lastMsg = null;
-	    }
-	    // this.refContacts[id].newMsg = '';
-	}  
+
+	// Получаем список последних сообщений и сортированный список
+	getLastMessages(): void {
+	  this.listLastMessage = this.createListLastMsg(this.listContacts, this.messages);
+	  this.sortedList = this.createSortedList(this.listContacts, this.listLastMessage);
+	  
+	  this.numNewMsg = this.countNewMsg(this.sortedList);
+	}
 
 
-	getLastMessage(id): void {
-	    this.refContacts[id].lastMsg = this.messages[id][this.messages[id].length-1];
+	// Получаем последнее сообщение по ID
+	getMessages(id: number): void {
+		this.refContacts[id].lastMsg = 
+			this.messages[id]
+				? this.getLastMessage(id)
+				: null;
+	}
+
+	// Получаем ссылку на последнее сообщение
+	getLastMessage(id: number): void {
+	    return this.getLastElement(this.messages[id]);
+	}
+
+	// Возвращает последний элемент массива
+	getLastElement(arr: Array<any>): void {
+	    return arr[arr.length - 1];
 	}
 
 
 	sendMsg(id): void {
-
-	  if (this.refContacts[id].lastMsg 
-	  		&& this.refContacts[id].lastMsg.go === 'out'){
-
-	    this.refContacts[id].lastMsg.messages.push(this.refContacts[id].newMsg);
-
+	  if (this.refContacts[id].lastMsg && this.refContacts[id].lastMsg.go === 'out'){
+	  	this.pushMsg(this.refContacts[id].newMsg, id);
 	  } else {
-
-	    // Создаем запись в объекте сообщений
-	    if (!this.refContacts[id].lastMsg) {
-	      this.messages[id] = [];
-	    }
-
-	    this.messages[id].push({
-	      go:'out', 
-	      messages: [this.refContacts[id].newMsg], 
-	      date: new Date(), 
-	      name: this.myName
-	    });
-
-	    this.getLastMessage(id);
+	    this.createNewMsg(this.refContacts[id].newMsg, id, 'out');
 	  }
 
 	  this.answerMsg(id, this.refContacts[id].newMsg, 1200, null);
@@ -147,9 +179,8 @@ export class MainService {
 
 
 	// (id, схематичное сообщение, задержка, заданный ответ)
-	answerMsg(id, msg, delay, customAnsw): void {
-
-	let answArray: any;
+	answerMsg(id: number, msg: string, delay: number, customAnsw: Array<string>): void {
+		let answArray: any, period: number;
 
 	  if (msg) {
 		  // Если попрощались то не ответит;)
@@ -161,43 +192,32 @@ export class MainService {
 	  	answArray = customAnsw;
 	  }
 	  
+	  // Если вообще никакого ответа нету, то выкидываем
 	  if (!answArray) return;
 
 
-	  let period = (delay + 4000) / answArray.length;
-	  setTimeout(()=>{
-	    this.refContacts[id].writes = true;
-	  }, delay);
+	  setTimeout(() => this.writesFlag(id, true), delay);
+		period = (delay + 4000) / answArray.length;
 
 
 	  answArray.forEach((e, ind)=>{
-	    setTimeout(()=>{
+	    setTimeout(() => {
 
-	      if ((ind === 0 && !this.refContacts[id].lastMsg) //*****
+	      if ((ind === 0 && !this.refContacts[id].lastMsg)
 	      		|| (ind === 0 && this.refContacts[id].lastMsg.go === 'out') 
 	      		|| this.refContacts[id].lastMsg.go === 'out' ) {
 
-	      	// Создаем запись в объекте сообщений*****
-	      	if (!this.refContacts[id].lastMsg) {
-	      	  this.messages[id] = [];
-	      	}
-
-	        this.messages[id].push({
-	          go:'in', 
-	          messages: [e], 
-	          date: new Date(), 
-	          name: this.refContacts[id].name
-	        });
+	      	this.createNewMsg(e, id, 'in');
 
 	      } else {
-
-	        this.refContacts[id].lastMsg.messages.push(e);
+	      	// Сообщение его последнее, поэтому добавляем к нему
+	      	this.pushMsg(e, id);
 	      }
 
 
 	      // Скидываем флаг, что кто то пишет
 	      if (ind === answArray.length - 1) {
-	      	this.refContacts[id].writes = false;
+	      	this.writesFlag(id, false);
 
 	      	// Отмечаем прочитались ли сообщения
 	      	this.refContacts[id].read =
@@ -208,11 +228,39 @@ export class MainService {
 	      	this.getLastMessages();
 	      }
 
-	      this.getLastMessage(id);
-
 	    }, period*(ind + 1));
 	  });
 	}
+
+
+	// Меняем флаг написания сообщения для ID
+	writesFlag(id: number, flag: boolean): void {
+		this.refContacts[id].writes = flag;
+	}
+
+	// Создаем новое сообщение
+	createNewMsg(msg: string, id: number, go: string): void {
+		this.checkLastMsg(id);
+
+    this.messages[id].push({
+      go, 
+      messages: [msg], 
+      date: new Date()
+    });
+
+    this.refContacts[id].lastMsg = this.getLastMessage(id);
+	}
+
+	// Добавляем в последнее сообщение
+	pushMsg(msg: string, id: number): void {
+		this.refContacts[id].lastMsg.messages.push(msg);
+	}
+
+	// Проверяем есть ли последнее сообщение
+	checkLastMsg(id: number): void {
+		if (!this.refContacts[id].lastMsg) { this.messages[id] = []; }
+	}
+	
 
 
 
